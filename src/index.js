@@ -196,15 +196,6 @@ export default class extends Component {
   autoplayTimer = null
   loopJumpTimer = null
 
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.autoplay && this.autoplayTimer)
-      clearTimeout(this.autoplayTimer)
-    if (nextProps.index === this.props.index) return
-    this.setState(
-      this.initState(nextProps, this.props.index !== nextProps.index)
-    )
-  }
-
   componentDidMount() {
     this.autoplay()
   }
@@ -224,8 +215,16 @@ export default class extends Component {
     // If autoplay props updated to true, autoplay immediately
     if (this.props.autoplay && !prevProps.autoplay) {
       this.autoplay()
+      // If autoplay props updated to false, clear autoplay timer
+    } else if (!this.props.autoplay && this.autoplayTimer)
+      clearTimeout(this.autoplayTimer);
     }
-    if (this.props.children !== prevProps.children) {
+
+    if (this.props.index !== prevProps.index) {
+      this.setState(
+        this.initState(this.props, true)
+      )
+    } else if (this.props.children !== prevProps.children) {
       this.setState(
         this.initState({ ...this.props, index: this.state.index }, true)
       )
