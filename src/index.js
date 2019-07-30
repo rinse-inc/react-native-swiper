@@ -205,19 +205,18 @@ export default class extends Component {
     this.loopJumpTimer && clearTimeout(this.loopJumpTimer)
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    // If the index has changed, we notify the parent via the onIndexChanged callback
-    if (this.state.index !== nextState.index)
-      this.props.onIndexChanged(nextState.index)
-  }
-
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     // If autoplay props updated to true, autoplay immediately
     if (this.props.autoplay && !prevProps.autoplay) {
       this.autoplay()
       // If autoplay props updated to false, clear autoplay timer
     } else if (!this.props.autoplay && this.autoplayTimer)
       clearTimeout(this.autoplayTimer);
+    }
+
+    // If the index has changed, we notify the parent via the onIndexChanged callback
+    if (this.state.index !== prevState.index)
+      this.props.onIndexChanged(this.state.index)
     }
 
     if (this.props.index !== prevProps.index) {
